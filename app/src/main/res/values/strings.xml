@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Recordador</string>
+    <string-array name="valores">
+        <item>Gorrión</item>
+        <item>Paucar</item>
+        <item>Colibri</item>
+        <item>Paloma</item>
+        <item>Garza</item>
+    </string-array>
+    <string name="contacto">Juan Antonio Cabello\n\n
+    juanantonio186@hotmail.com</string>
+</resources>
