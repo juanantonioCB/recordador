@@ -1,10 +1,14 @@
 package com.juanantonio.recordador.view;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 import com.juanantonio.recordador.R;
 import com.juanantonio.recordador.presenter.FormularioPresenter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class FormularioView extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -63,11 +68,8 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
-
-
         spinner.setOnItemSelectedListener(this);
         presenter = new FormularioPresenter(this);
-
     }
 
     private void setLayout() {
@@ -78,6 +80,22 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                image.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     @Override
     public void onBackPressed() {

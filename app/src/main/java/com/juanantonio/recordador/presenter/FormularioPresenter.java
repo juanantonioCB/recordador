@@ -13,8 +13,8 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.juanantonio.recordador.R;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class FormularioPresenter {
     FormularioView view;
     private Context myContext;
-
+    private int idPersona;
 
     public FormularioPresenter(final FormularioView view) {
         this.view = view;
@@ -36,8 +36,8 @@ public class FormularioPresenter {
         view.emailTextView.setVisibility(View.GONE);
         view.localidadTextView.setVisibility(View.GONE);
         view.telefonoTextView.setVisibility(View.GONE);
-
-
+        idPersona = view.getIntent().getExtras().getInt("id");
+        Log.d("ID persona", String.valueOf(idPersona));
 
         view.addElementButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,20 +180,41 @@ public class FormularioPresenter {
     }
 
     private void cargarImagen() {
-        int InternetPermission = ContextCompat.checkSelfPermission(myContext, Manifest.permission.INTERNET);
-        Log.d("MainActivity", "INTERNET Permission: " + InternetPermission);
-
-        if (InternetPermission != PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            String[] mimeTypes = {"image/jpeg", "image/png"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-            // Launching the Intent
-            view.startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-        } else {
-            System.out.println("permiso denegado");
-        }
+        storagePermissions();
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        view.startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
 
 
     }
+
+
+    private void storagePermissions() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(view, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            new AlertDialog.Builder(view)
+                    .setTitle("Permission needed")
+                    .setMessage("Se necesitan permisos para acceder a la galería")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(view,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            Snackbar.make(view.getWindow().getDecorView().getRootView(), "Se necesitan permisos", Snackbar.LENGTH_SHORT).show();
+                        }
+                    })
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(view, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
+
+    }
+
 }
