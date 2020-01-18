@@ -3,11 +3,18 @@ package com.juanantonio.recordador.presenter;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+
+import com.juanantonio.recordador.model.Person;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.text.InputType;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -18,9 +25,11 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.juanantonio.recordador.R;
+import com.juanantonio.recordador.model.PersonaSQLiteHelper;
 import com.juanantonio.recordador.view.FormularioView;
 import com.juanantonio.recordador.view.ListadoView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,15 +37,25 @@ public class FormularioPresenter {
     FormularioView view;
     private Context myContext;
     private int idPersona;
+    private boolean nombreOk = false;
+    private boolean emailOk = false;
+
+    private boolean localidadOk = false;
+    private boolean telefonoOk = false;
+    private PersonaSQLiteHelper db;
 
     public FormularioPresenter(final FormularioView view) {
         this.view = view;
+        this.db = PersonaSQLiteHelper.get(view.getApplicationContext());
         this.view.actionBar.setTitle("Añadir Usuario Nuevo");
         view.nombreTextView.setVisibility(View.GONE);
         view.emailTextView.setVisibility(View.GONE);
         view.localidadTextView.setVisibility(View.GONE);
         view.telefonoTextView.setVisibility(View.GONE);
-        idPersona = view.getIntent().getExtras().getInt("id");
+        view.fechaTextView.setVisibility(View.GONE);
+        Bundle bundle = view.getIntent().getExtras();
+        if (bundle != null)
+            idPersona = bundle.getInt("id");
         Log.d("ID persona", String.valueOf(idPersona));
 
         view.addElementButton.setOnClickListener(new View.OnClickListener() {
@@ -85,10 +104,11 @@ public class FormularioPresenter {
         view.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ListadoView.class);
-                view.startActivity(intent);
+                savePerson();
+
 
             }
+
         });
 
         view.nombreEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -97,8 +117,10 @@ public class FormularioPresenter {
                 if (!hasFocus) {
                     if (view.nombreEditText.getText().toString().equals("")) {
                         view.nombreTextView.setVisibility(View.VISIBLE);
+                        nombreOk = false;
                     } else {
                         view.nombreTextView.setVisibility(View.GONE);
+                        nombreOk = true;
                     }
                 }
             }
@@ -108,10 +130,11 @@ public class FormularioPresenter {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (!validaEmail(view.emailEditText.getText().toString())) {
-
                         view.emailTextView.setVisibility(View.VISIBLE);
+                        emailOk = false;
                     } else {
                         view.emailTextView.setVisibility(View.GONE);
+                        emailOk = true;
                     }
                 }
             }
@@ -123,8 +146,10 @@ public class FormularioPresenter {
                 if (!hasFocus) {
                     if (view.localidadEditText.getText().toString().equals("")) {
                         view.localidadTextView.setVisibility(View.VISIBLE);
+                        localidadOk = false;
                     } else {
                         view.localidadTextView.setVisibility(View.GONE);
+                        localidadOk = true;
                     }
                 }
             }
@@ -136,12 +161,43 @@ public class FormularioPresenter {
                 if (!hasFocus) {
                     if (!validaTelefono(view.telefonoEditText.getText().toString())) {
                         view.telefonoTextView.setVisibility(View.VISIBLE);
+                        telefonoOk = false;
                     } else {
                         view.telefonoTextView.setVisibility(View.GONE);
+                        telefonoOk = true;
                     }
                 }
             }
         });
+
+
+    }
+
+    private void savePerson() {
+        String fotoEnBase64 = null;
+        if (view.image.getDrawable() != null) {
+            Bitmap bitmap = ((BitmapDrawable) view.image.getDrawable()).getBitmap();
+            if (bitmap != null) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                fotoEnBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            }
+        }
+
+        if (nombreOk && emailOk && localidadOk && telefonoOk && !view.fechaText.getText().toString().equals("")) {
+            Person p = new Person(null, view.nombreEditText.getText().toString(),
+                    view.emailEditText.getText().toString(),
+                    fotoEnBase64,
+                    view.localidadEditText.getText().toString(),
+                    view.telefonoEditText.getText().toString(),
+                    view.fechaText.getText().toString());
+            db.insertarPersona(p);
+            Intent intent = new Intent(view.getApplicationContext(), ListadoView.class);
+            view.startActivity(intent);
+        }
+
+
     }
 
     private void showDatePickerDialog() {

@@ -3,14 +3,43 @@ package com.juanantonio.recordador.model;
 public class Person {
     private Integer id = null;
     private String name = null;
-    private String surname = null;
+    private String email = null;
     private String image = null;
+    private String location = null;
+    private String phone = null;
+    private String date = null;
+    public String getLocation() {
+        return location;
+    }
 
-    public Person(Integer id, String user, String email, String image) {
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Person(Integer id, String name, String email, String image, String location, String phone, String date) {
         this.id = id;
-        this.name = user;
-        this.surname = email;
+        this.name = name;
+        this.email = email;
         this.image = image;
+        this.location = location;
+        this.phone = phone;
+        this.date = date;
     }
 
     public Integer getId() {
@@ -29,12 +58,12 @@ public class Person {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getImage() {

@@ -42,6 +42,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     public EditText fechaText;
     public Button addElementButton;
     public Spinner spinner;
+    public TextView fechaTextView;
 
     FormularioPresenter presenter;
     public ArrayList<String> elementos;
@@ -61,6 +62,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         localidadTextView = findViewById(R.id.localidadTextView);
         localidadEditText = findViewById(R.id.LocalidadText);
         telefonoEditText = findViewById(R.id.telefonoText);
+        fechaTextView=findViewById(R.id.fechaTextView);
         fechaText = findViewById(R.id.fechaText);
         addElementButton=findViewById(R.id.addButton);
         spinner=findViewById(R.id.spinner);
@@ -88,14 +90,13 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
             Uri uri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                image.setImageBitmap(bitmap);
+                Bitmap imagenFinal = Bitmap.createScaledBitmap(bitmap,100,100,false);
+                image.setImageBitmap(imagenFinal);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
-
 
     @Override
     public void onBackPressed() {

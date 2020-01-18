@@ -7,6 +7,17 @@
     tools:context=".view.FormularioView">
 
 
+    <TextView
+        android:id="@+id/fechaTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Introduce una fecha válida"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fechaText" />
+
     <EditText
         android:id="@+id/nombreText"
         android:layout_width="wrap_content"
@@ -132,13 +143,13 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
+        android:clickable="true"
         android:drawableLeft="@drawable/date_logo"
         android:drawablePadding="10dp"
         android:ems="15"
+        android:focusable="false"
         android:hint="Fecha"
         android:inputType="number"
-        android:focusable="false"
-        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
@@ -148,20 +159,21 @@
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toStartOf="@+id/addButton"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fechaText" />
+        app:layout_constraintTop_toBottomOf="@+id/fechaTextView" />
 
     <Button
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="44dp"
         android:text="Añadir"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fechaText" />
+        app:layout_constraintTop_toBottomOf="@+id/fechaTextView" />
 
     <ImageView
         android:id="@+id/image"
@@ -203,7 +215,9 @@
         android:text="GUARDAR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/addButton"
+        app:layout_constraintVertical_bias="0.2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
