@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.InputType;
@@ -53,6 +54,7 @@ public class FormularioPresenter {
         view.fechaTextView.setVisibility(View.GONE);
         Bundle bundle = view.getIntent().getExtras();
         if (bundle != null)
+
             idPersona = bundle.getInt("id");
         Log.d("ID persona", String.valueOf(idPersona));
 
@@ -236,6 +238,22 @@ public class FormularioPresenter {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         view.startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+    }
+
+    public void cargarPersona(){
+        if(idPersona!=0){
+            Person p = db.recuperarPersona(idPersona);
+            view.nombreEditText.setText(p.getName());
+            view.emailEditText.setText(p.getEmail());
+            view.localidadEditText.setText(p.getLocation());
+            view.telefonoEditText.setText(p.getPhone());
+            view.fechaText.setText(p.getDate());
+            if(p.getImage()!=null){
+                byte[] decodedString = Base64.decode(p.getImage(), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                view.image.setImageBitmap(decodedByte);
+            }
+        }
 
 
     }

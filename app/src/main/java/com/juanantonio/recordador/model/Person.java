@@ -42,6 +42,12 @@ public class Person {
         this.date = date;
     }
 
+    @Override
+    public String toString(){
+        return "Nombre: "+this.name+
+                "ID: "+this.id;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -73,4 +79,7 @@ public class Person {
     public void setImage(String image) {
         this.image = image;
     }
+
+
+
 }

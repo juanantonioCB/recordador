@@ -46,6 +46,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
     FormularioPresenter presenter;
     public ArrayList<String> elementos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,16 +63,17 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         localidadTextView = findViewById(R.id.localidadTextView);
         localidadEditText = findViewById(R.id.LocalidadText);
         telefonoEditText = findViewById(R.id.telefonoText);
-        fechaTextView=findViewById(R.id.fechaTextView);
+        fechaTextView = findViewById(R.id.fechaTextView);
         fechaText = findViewById(R.id.fechaText);
-        addElementButton=findViewById(R.id.addButton);
-        spinner=findViewById(R.id.spinner);
-        elementos=new ArrayList<>();
+        addElementButton = findViewById(R.id.addButton);
+        spinner = findViewById(R.id.spinner);
+        elementos = new ArrayList<>();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(this);
         presenter = new FormularioPresenter(this);
+        presenter.cargarPersona();
     }
 
     private void setLayout() {
@@ -90,7 +92,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
             Uri uri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                Bitmap imagenFinal = Bitmap.createScaledBitmap(bitmap,100,100,false);
+                Bitmap imagenFinal = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
                 image.setImageBitmap(imagenFinal);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -106,7 +108,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
- 
+
     }
 
     @Override
