@@ -9,7 +9,6 @@ import com.juanantonio.recordador.model.Person;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -39,14 +38,13 @@ public class FormularioPresenter {
     private int idPersona;
     private boolean nombreOk = false;
     private boolean emailOk = false;
-
     private boolean localidadOk = false;
     private boolean telefonoOk = false;
     private PersonaSQLiteHelper db;
 
     public FormularioPresenter(final FormularioView view) {
         this.view = view;
-        this.db = PersonaSQLiteHelper.get(view.getApplicationContext());
+        this.db = PersonaSQLiteHelper.get();
         this.view.actionBar.setTitle("Añadir Usuario Nuevo");
         view.nombreTextView.setVisibility(View.GONE);
         view.emailTextView.setVisibility(View.GONE);
@@ -139,7 +137,6 @@ public class FormularioPresenter {
                 }
             }
         });
-
         view.localidadEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -154,7 +151,6 @@ public class FormularioPresenter {
                 }
             }
         });
-
         view.telefonoEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -169,21 +165,20 @@ public class FormularioPresenter {
                 }
             }
         });
-
-
     }
 
     private void savePerson() {
-        String fotoEnBase64 = null;
-        if (view.image.getDrawable() != null) {
+        String fotoEnBase64;
+        try {
             Bitmap bitmap = ((BitmapDrawable) view.image.getDrawable()).getBitmap();
-            if (bitmap != null) {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                byte[] byteArray = byteArrayOutputStream.toByteArray();
-                fotoEnBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-            }
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            fotoEnBase64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        } catch (java.lang.ClassCastException e) {
+            fotoEnBase64 = null;
         }
+
 
         if (nombreOk && emailOk && localidadOk && telefonoOk && !view.fechaText.getText().toString().equals("")) {
             Person p = new Person(null, view.nombreEditText.getText().toString(),

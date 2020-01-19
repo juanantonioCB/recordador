@@ -26,18 +26,20 @@ public class ListadoPresenter implements PersonAdapter.onPersonListener {
     private RecyclerView recyclerView;
     private PersonAdapter adapter;
     private List<Person> persons;
+    PersonaSQLiteHelper usdbh = PersonaSQLiteHelper.get();
 
     public ListadoPresenter(ListadoView v) {
+
+
+        SQLiteDatabase db = usdbh.getWritableDatabase();
+
+        db.close();
+
+        persons = new ArrayList<>();
         this.listadoActivity = v;
         recyclerView = v.findViewById(R.id.RecyclerId);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(v));
-        persons = new ArrayList<>();
-        persons.add(new Person(1,"a","d",null,"adf","df","df"));
-
-        adapter = new PersonAdapter(persons, v, this);
-        recyclerView.setAdapter(adapter);
-
         listadoActivity.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,13 +68,14 @@ public class ListadoPresenter implements PersonAdapter.onPersonListener {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-
-        PersonaSQLiteHelper usdbh = PersonaSQLiteHelper.get(listadoActivity);
-        SQLiteDatabase db = usdbh.getWritableDatabase();
-
-        db.close();
     }
 
+    public void reload() {
+        persons = usdbh.recuperarListado();
+        adapter = new PersonAdapter(persons, listadoActivity, this);
+        recyclerView.setAdapter(adapter);
+        listadoActivity.nElementos.setText("Número de elementos: " + String.valueOf(adapter.getItemCount()));
+    }
 
     @Override
     public void onPersonClick(int position) {

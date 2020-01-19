@@ -2,7 +2,7 @@ package com.juanantonio.recordador.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -16,6 +16,7 @@ import com.juanantonio.recordador.presenter.ListadoPresenter;
 
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class ListadoView extends AppCompatActivity {
     private ListadoPresenter presenter;
     public FloatingActionButton addButton;
     public RecyclerView rv;
+    public TextView nElementos;
     private ArrayList<Person> persons;
 
     @Override
@@ -46,17 +48,20 @@ public class ListadoView extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.reload();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLayout();
+        nElementos = findViewById(R.id.nElementosTextView);
         addButton = findViewById(R.id.addButton);
         rv = findViewById(R.id.recyclerView);
-
         presenter = new ListadoPresenter(this);
-
-
     }
 
     private void setLayout() {
