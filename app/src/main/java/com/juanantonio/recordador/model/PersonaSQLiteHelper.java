@@ -71,6 +71,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             p = new ArrayList<>();
             do {
+
                 p.add(new Person(c.getInt(c.getColumnIndex("codigo")),
                         c.getString(c.getColumnIndex("nombre")),
                         c.getString(c.getColumnIndex("email")),

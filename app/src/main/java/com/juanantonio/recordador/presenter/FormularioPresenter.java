@@ -37,10 +37,6 @@ public class FormularioPresenter {
     FormularioView view;
     private Context myContext;
     private int idPersona;
-    private boolean nombreOk = false;
-    private boolean emailOk = false;
-    private boolean localidadOk = false;
-    private boolean telefonoOk = false;
     private PersonaSQLiteHelper db;
 
     public FormularioPresenter(final FormularioView view) {
@@ -116,11 +112,10 @@ public class FormularioPresenter {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (view.nombreEditText.getText().toString().equals("")) {
+                        view.nombreTextView.setText("EL nombre no puede ir vacío");
                         view.nombreTextView.setVisibility(View.VISIBLE);
-                        nombreOk = false;
                     } else {
                         view.nombreTextView.setVisibility(View.GONE);
-                        nombreOk = true;
                     }
                 }
             }
@@ -129,12 +124,11 @@ public class FormularioPresenter {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!validaEmail(view.emailEditText.getText().toString())) {
+                    if (view.emailEditText.getText().toString().equals("")) {
+                        view.emailTextView.setText("El email no puede ir vacío");
                         view.emailTextView.setVisibility(View.VISIBLE);
-                        emailOk = false;
                     } else {
                         view.emailTextView.setVisibility(View.GONE);
-                        emailOk = true;
                     }
                 }
             }
@@ -144,11 +138,10 @@ public class FormularioPresenter {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (view.localidadEditText.getText().toString().equals("")) {
+                        view.localidadTextView.setText("La localidad no puede ir vacía");
                         view.localidadTextView.setVisibility(View.VISIBLE);
-                        localidadOk = false;
                     } else {
                         view.localidadTextView.setVisibility(View.GONE);
-                        localidadOk = true;
                     }
                 }
             }
@@ -157,12 +150,11 @@ public class FormularioPresenter {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!validaTelefono(view.telefonoEditText.getText().toString())) {
+                    if (view.telefonoEditText.getText().toString().equals("")) {
+                        view.telefonoTextView.setText("El telefono no puede ir vacío");
                         view.telefonoTextView.setVisibility(View.VISIBLE);
-                        telefonoOk = false;
                     } else {
                         view.telefonoTextView.setVisibility(View.GONE);
-                        telefonoOk = true;
                     }
                 }
             }
@@ -181,19 +173,50 @@ public class FormularioPresenter {
             fotoEnBase64 = null;
         }
 
+        Person p = new Person();
 
-        if (nombreOk && emailOk && localidadOk && telefonoOk && !view.fechaText.getText().toString().equals("")) {
-            Person p = new Person(null, view.nombreEditText.getText().toString(),
-                    view.emailEditText.getText().toString(),
-                    fotoEnBase64,
-                    view.localidadEditText.getText().toString(),
-                    view.telefonoEditText.getText().toString(),
-                    view.fechaText.getText().toString());
+        //COMPROBAMOS SI TODO ESTA CORRECTO
+        if (p.setName(view.nombreEditText.getText().toString()) &&
+                p.setEmail(view.emailEditText.getText().toString()) &&
+                p.setImage(fotoEnBase64) &&
+                p.setLocation(view.localidadEditText.getText().toString()) &&
+                p.setPhone(view.telefonoEditText.getText().toString()) &&
+                p.setDate(view.fechaText.getText().toString())) {
             db.insertarPersona(p);
             Intent intent = new Intent(view.getApplicationContext(), ListadoView.class);
             view.startActivity(intent);
+        }else{
+            if (!p.setName(view.nombreEditText.getText().toString())) {
+                view.nombreTextView.setText("EL nombre es muy corto");
+                view.nombreTextView.setVisibility(View.VISIBLE);
+            } else {
+                view.nombreTextView.setVisibility(View.GONE);
+            }
+            if (!p.setEmail(view.emailEditText.getText().toString())) {
+                view.emailTextView.setText("EL email es incorrecto");
+                view.emailTextView.setVisibility(View.VISIBLE);
+            } else {
+                view.emailTextView.setVisibility(View.GONE);
+            }
+            if (!p.setLocation(view.localidadEditText.getText().toString())) {
+                view.localidadTextView.setText("La localización es incorrecta");
+                view.localidadTextView.setVisibility(View.VISIBLE);
+            } else {
+                view.localidadTextView.setVisibility(View.GONE);
+            }
+            if (!p.setPhone(view.telefonoEditText.getText().toString())) {
+                view.telefonoTextView.setText("EL teléfono es incorrecto");
+                view.telefonoTextView.setVisibility(View.VISIBLE);
+            } else {
+                view.telefonoTextView.setVisibility(View.GONE);
+            }
+            if (!p.setDate(view.fechaText.getText().toString())) {
+                view.fechaTextView.setText("La fecha es incorrecta");
+                view.fechaTextView.setVisibility(View.VISIBLE);
+            } else {
+                view.fechaTextView.setVisibility(View.GONE);
+            }
         }
-
 
     }
 
@@ -202,7 +225,7 @@ public class FormularioPresenter {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
-                final String selectedDate = day + " / " + (month + 1) + " / " + year;
+                final String selectedDate = day + "/" + (month + 1) + "/" + year;
                 view.fechaText.setText(selectedDate);
             }
         });
@@ -240,15 +263,16 @@ public class FormularioPresenter {
         view.startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
     }
 
-    public void cargarPersona(){
-        if(idPersona!=0){
+    public void cargarPersona() {
+        if (idPersona != 0) {
+
             Person p = db.recuperarPersona(idPersona);
             view.nombreEditText.setText(p.getName());
             view.emailEditText.setText(p.getEmail());
             view.localidadEditText.setText(p.getLocation());
             view.telefonoEditText.setText(p.getPhone());
             view.fechaText.setText(p.getDate());
-            if(p.getImage()!=null){
+            if (p.getImage() != null) {
                 byte[] decodedString = Base64.decode(p.getImage(), Base64.DEFAULT);
                 Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                 view.image.setImageBitmap(decodedByte);

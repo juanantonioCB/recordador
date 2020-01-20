@@ -59,7 +59,12 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return listPersons.size();
+        if(listPersons!=null){
+            return listPersons.size();
+        }else{
+            return 0;
+        }
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
