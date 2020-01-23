@@ -18,7 +18,9 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
             "imagen TEXT, " +
             "localidad TEXT, " +
             "telefono TEXT, " +
-            "fecha TEXT)";
+            "fecha TEXT," +
+            "estado INTEGER," +
+            "provincia TEXT)";
     String sqlRecoverAll = "SELECT codigo, nombre,email, imagen FROM 'Personas'";
     String sqlRecoverOne = "SELECT * FROM 'Personas' WHERE codigo=?";
 
@@ -62,8 +64,27 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         v.put("localidad", p.getLocation());
         v.put("telefono", p.getPhone());
         v.put("fecha", p.getDate());
+        v.put("estado", p.getState() ? 1 : 0);
+        System.out.println("aaa" + p.getProvince());
+        v.put("provincia", p.getProvince());
         this.getWritableDatabase().insert("Personas", null, v);
     }
+
+    public void actualizarPersona(Person p) {
+        ContentValues v = new ContentValues();
+        v.put("nombre", p.getName());
+        v.put("email", p.getEmail());
+        v.put("imagen", p.getImage());
+        v.put("localidad", p.getLocation());
+        v.put("telefono", p.getPhone());
+        v.put("fecha", p.getDate());
+        v.put("estado", p.getState() ? 1 : 0);
+        System.out.println("-----" + p.getProvince());
+        v.put("provincia", p.getProvince());
+        String[] args = new String[]{String.valueOf(p.getId())};
+        this.getWritableDatabase().update("Personas", v, "codigo=?", args);
+    }
+
 
     public List<Person> recuperarListado() {
         List<Person> p = null;
@@ -71,12 +92,11 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             p = new ArrayList<>();
             do {
-
                 p.add(new Person(c.getInt(c.getColumnIndex("codigo")),
                         c.getString(c.getColumnIndex("nombre")),
                         c.getString(c.getColumnIndex("email")),
                         c.getString(c.getColumnIndex("imagen")),
-                        null, null, null));
+                        null, null, null, null, null));
             } while (c.moveToNext());
         }
         return p;
@@ -93,7 +113,9 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
                     c.getString(c.getColumnIndex("imagen")),
                     c.getString(c.getColumnIndex("localidad")),
                     c.getString(c.getColumnIndex("telefono")),
-                    c.getString(c.getColumnIndex("fecha")));
+                    c.getString(c.getColumnIndex("fecha")),
+                    (c.getInt(c.getColumnIndex("estado")) != 0),
+                    c.getString(c.getColumnIndex("provincia")));
         }
         return p;
     }

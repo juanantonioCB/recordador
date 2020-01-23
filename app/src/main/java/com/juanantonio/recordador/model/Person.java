@@ -1,5 +1,7 @@
 package com.juanantonio.recordador.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,16 +13,39 @@ public class Person {
     private String location = null;
     private String phone = null;
     private String date = null;
+    private Boolean state = null;
+    private String province = null;
 
     public String getLocation() {
         return location;
     }
 
+    public Boolean getState() {
+        return state;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public boolean setProvince(String province) {
+        if (province.length() > 3) {
+            this.province = province;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
+    }
+
     public boolean setLocation(String location) {
-        if(location.length()>3){
+        if (location.length() > 3) {
             this.location = location;
             return true;
-        }else{
+        } else {
             return false;
         }
 
@@ -48,22 +73,22 @@ public class Person {
     }
 
     public boolean setDate(String date) {
-        Pattern pattern = Pattern
-                .compile("(([1-2][0-9])|([1-9])|(3[0-1]))/((1[0-2])|([1-9]))/[0-9]{4}");
-        Matcher mather = pattern.matcher(date);
-        if (mather.find() == true) {
-            this.date = date;
-            return true;
-        } else {
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            formatoFecha.setLenient(false);
+            formatoFecha.parse(date);
+        } catch (ParseException e) {
             return false;
         }
+        this.date = date;
+        return true;
 
     }
 
     public Person() {
     }
 
-    public Person(Integer id, String name, String email, String image, String location, String phone, String date) {
+    public Person(Integer id, String name, String email, String image, String location, String phone, String date, Boolean state, String province) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -71,6 +96,8 @@ public class Person {
         this.location = location;
         this.phone = phone;
         this.date = date;
+        this.state = state;
+        this.province=province;
     }
 
     @Override
@@ -125,10 +152,8 @@ public class Person {
         return image;
     }
 
-    public boolean setImage(String image) {
-        this.image=image;
-        return true;
-
+    public void setImage(String image) {
+        this.image = image;
     }
 
 

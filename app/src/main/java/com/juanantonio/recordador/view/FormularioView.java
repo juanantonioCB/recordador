@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,9 +44,9 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     public Button addElementButton;
     public Spinner spinner;
     public TextView fechaTextView;
+    public Switch statusSwitch;
 
     FormularioPresenter presenter;
-    public ArrayList<String> elementos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +67,13 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         fechaTextView = findViewById(R.id.fechaTextView);
         fechaText = findViewById(R.id.fechaText);
         addElementButton = findViewById(R.id.addButton);
+        statusSwitch=findViewById(R.id.switch10);
         spinner = findViewById(R.id.spinner);
-        elementos = new ArrayList<>();
+        /*elementos = new ArrayList<>();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(this);*/
         presenter = new FormularioPresenter(this);
         presenter.cargarPersona();
     }
@@ -108,6 +110,8 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String item = parent.getItemAtPosition(position).toString();
+        System.out.println(item);
 
     }
 
