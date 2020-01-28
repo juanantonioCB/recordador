@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,9 +51,11 @@ public class ListadoPresenter implements PersonAdapter.onPersonListener {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                int id=persons.get(viewHolder.getAdapterPosition()).getId();
+                usdbh.eliminarPersona(id);
                 adapter.removeAt(viewHolder.getAdapterPosition());
+                reload();
                 Toast.makeText(listadoActivity.getApplicationContext(), "Borrado Correctamente", Toast.LENGTH_SHORT).show();
-
                 Log.d("Borrado", String.valueOf(viewHolder.getAdapterPosition()));
             }
 

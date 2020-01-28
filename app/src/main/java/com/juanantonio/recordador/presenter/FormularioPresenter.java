@@ -32,6 +32,7 @@ import com.juanantonio.recordador.view.ListadoView;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FormularioPresenter {
     FormularioView view;
@@ -39,7 +40,7 @@ public class FormularioPresenter {
     private int idPersona;
     private PersonaSQLiteHelper db;
     public ArrayList<String> elementos;
-
+    private ArrayAdapter<String> arrayAdapter = null;
     public FormularioPresenter(final FormularioView view) {
         this.view = view;
         this.db = PersonaSQLiteHelper.get();
@@ -52,14 +53,19 @@ public class FormularioPresenter {
         Bundle bundle = view.getIntent().getExtras();
 
         if (bundle != null)
-
             idPersona = bundle.getInt("id");
         Log.d("ID persona", String.valueOf(idPersona));
 
         elementos = new ArrayList<>();
         elementos.add("Ninguna");
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(view, android.R.layout.simple_spinner_item, elementos);
+        if (db.recuperarProvincias() != null) {
+            elementos = (ArrayList<String>) db.recuperarProvincias();
+            arrayAdapter = new ArrayAdapter<String>(view, android.R.layout.simple_spinner_item, elementos);
+        } else {
+            arrayAdapter = new ArrayAdapter<String>(view, android.R.layout.simple_spinner_item, elementos);
+
+        }
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         view.spinner.setAdapter(arrayAdapter);
         view.spinner.setOnItemSelectedListener(view);
@@ -181,6 +187,20 @@ public class FormularioPresenter {
                 }
             }
         });
+        view.deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(idPersona!=0){
+                    db.eliminarPersona(idPersona);
+                    Intent intent = new Intent(view, ListadoView.class);
+                    view.startActivity(intent);
+                }
+
+            }
+        });
+        if(idPersona==0){
+            view.deleteButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void updatePerson() {
@@ -288,6 +308,7 @@ public class FormularioPresenter {
             view.telefonoEditText.setText(p.getPhone());
             view.fechaText.setText(p.getDate());
             view.statusSwitch.setChecked(p.getState());
+            view.spinner.setSelection(arrayAdapter.getPosition(p.getProvince()));
 
             if (p.getImage() != null) {
                 byte[] decodedString = Base64.decode(p.getImage(), Base64.DEFAULT);

@@ -45,6 +45,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     public Spinner spinner;
     public TextView fechaTextView;
     public Switch statusSwitch;
+    public Button deleteButton;
 
     FormularioPresenter presenter;
 
@@ -55,6 +56,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         addButton = findViewById(R.id.addImageButton);
         image = findViewById(R.id.image);
         actionBar = getSupportActionBar();
+        deleteButton=findViewById(R.id.deleteButton);
         saveButton = findViewById(R.id.saveButton);
         nombreEditText = findViewById(R.id.nombreText);
         nombreTextView = findViewById(R.id.nombreTextView);
@@ -69,11 +71,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         addElementButton = findViewById(R.id.addButton);
         statusSwitch=findViewById(R.id.switch10);
         spinner = findViewById(R.id.spinner);
-        /*elementos = new ArrayList<>();
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(this);*/
         presenter = new FormularioPresenter(this);
         presenter.cargarPersona();
     }

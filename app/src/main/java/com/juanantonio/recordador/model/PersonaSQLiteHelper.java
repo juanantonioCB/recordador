@@ -23,6 +23,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
             "provincia TEXT)";
     String sqlRecoverAll = "SELECT codigo, nombre,email, imagen FROM 'Personas'";
     String sqlRecoverOne = "SELECT * FROM 'Personas' WHERE codigo=?";
+    String sqlRecoverProvince = "SELECT DISTINCT provincia FROM 'Personas'";
 
     public static final String DB_NAME = "DBPersona.db";
     public static final int DB_VERSION = 1;
@@ -79,12 +80,15 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         v.put("telefono", p.getPhone());
         v.put("fecha", p.getDate());
         v.put("estado", p.getState() ? 1 : 0);
-        System.out.println("-----" + p.getProvince());
         v.put("provincia", p.getProvince());
         String[] args = new String[]{String.valueOf(p.getId())};
         this.getWritableDatabase().update("Personas", v, "codigo=?", args);
     }
 
+    public void eliminarPersona(int id){
+        String[] args = new String[]{String.valueOf(id)};
+        this.getWritableDatabase().delete("Personas", "codigo=?", args);
+    }
 
     public List<Person> recuperarListado() {
         List<Person> p = null;
@@ -97,6 +101,18 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
                         c.getString(c.getColumnIndex("email")),
                         c.getString(c.getColumnIndex("imagen")),
                         null, null, null, null, null));
+            } while (c.moveToNext());
+        }
+        return p;
+    }
+
+    public List<String> recuperarProvincias() {
+        List<String> p = null;
+        Cursor c = this.getWritableDatabase().rawQuery(sqlRecoverProvince, null);
+        if (c.moveToFirst()) {
+            p = new ArrayList<>();
+            do {
+                p.add(c.getString(c.getColumnIndex("provincia")));
             } while (c.moveToNext());
         }
         return p;
