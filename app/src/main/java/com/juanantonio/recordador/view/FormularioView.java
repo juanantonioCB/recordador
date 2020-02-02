@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -53,10 +55,11 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLayout();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addButton = findViewById(R.id.addImageButton);
         image = findViewById(R.id.image);
         actionBar = getSupportActionBar();
-        deleteButton=findViewById(R.id.deleteButton);
+        deleteButton = findViewById(R.id.deleteButton);
         saveButton = findViewById(R.id.saveButton);
         nombreEditText = findViewById(R.id.nombreText);
         nombreTextView = findViewById(R.id.nombreTextView);
@@ -69,10 +72,21 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         fechaTextView = findViewById(R.id.fechaTextView);
         fechaText = findViewById(R.id.fechaText);
         addElementButton = findViewById(R.id.addButton);
-        statusSwitch=findViewById(R.id.switch10);
+        statusSwitch = findViewById(R.id.switch10);
         spinner = findViewById(R.id.spinner);
         presenter = new FormularioPresenter(this);
         presenter.cargarPersona();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: //hago un case por si en un futuro agrego mas opciones
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setLayout() {

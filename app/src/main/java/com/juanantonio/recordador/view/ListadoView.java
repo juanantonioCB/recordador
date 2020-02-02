@@ -42,7 +42,6 @@ public class ListadoView extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -66,11 +65,7 @@ public class ListadoView extends AppCompatActivity {
     }
 
     private void setLayout() {
-        if (getResources().getConfiguration().orientation == 1) {
-            setContentView(R.layout.listado_view);
-        } else {
-            setContentView(R.layout.listado_view_landcape);
-        }
+        setContentView(R.layout.listado_view);
     }
 
     @Override

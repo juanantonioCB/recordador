@@ -192,8 +192,7 @@ public class FormularioPresenter {
             public void onClick(View v) {
                 if(idPersona!=0){
                     db.eliminarPersona(idPersona);
-                    Intent intent = new Intent(view, ListadoView.class);
-                    view.startActivity(intent);
+                    view.onBackPressed();
                 }
 
             }
@@ -240,8 +239,9 @@ public class FormularioPresenter {
                 db.actualizarPersona(p);
                 System.out.println("actualiza");
             }
-            Intent intent = new Intent(view.getApplicationContext(), ListadoView.class);
-            view.startActivity(intent);
+            /*Intent intent = new Intent(view.getApplicationContext(), ListadoView.class);
+            view.startActivity(intent);*/
+            view.onBackPressed();
         } else {
             if (!p.setName(view.nombreEditText.getText().toString())) {
                 view.nombreTextView.setText("EL nombre es muy corto");
