@@ -1,8 +1,6 @@
 package com.juanantonio.recordador.presenter;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -53,8 +51,6 @@ public class ListadoPresenter implements PersonAdapter.onPersonListener {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-
                 int id=persons.get(viewHolder.getAdapterPosition()).getId();
                 usdbh.eliminarPersona(id);
                 adapter.removeAt(viewHolder.getAdapterPosition());
@@ -74,6 +70,10 @@ public class ListadoPresenter implements PersonAdapter.onPersonListener {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
+    }
+
+    public void cargarPersonaBuscada(){
+        listadoActivity.abrirBusqueda();
     }
 
     public void reload() {

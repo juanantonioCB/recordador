@@ -1,6 +1,7 @@
 package com.juanantonio.recordador.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +16,6 @@ import com.juanantonio.recordador.model.Person;
 import com.juanantonio.recordador.presenter.ListadoPresenter;
 
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,12 +27,11 @@ public class ListadoView extends AppCompatActivity {
     public RecyclerView rv;
     public TextView nElementos;
     private ArrayList<Person> persons;
-
+    private static int resultCode = 1;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.search) {
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
+            presenter.cargarPersonaBuscada();
         }
         if (item.getItemId() == R.id.sobre_appcrud) {
             Intent intent = new Intent(this, SobreAppCrud.class);
@@ -41,6 +40,22 @@ public class ListadoView extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void abrirBusqueda(){
+        Intent i =new Intent(this, BusquedaActivity.class);
+
+        startActivityForResult(i,1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==1){
+            if(resultCode==RESULT_OK){
+                System.out.println("rec "+data.getExtras().getString("fecha"));
+                System.out.println("-----"+data.getExtras().getString("nombre"));
+                System.out.println("-----"+data.getExtras().getString("provincia"));
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

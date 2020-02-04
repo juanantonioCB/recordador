@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".view.SobreAppCrud"></activity>
-        <activity android:name=".view.SearchActivity" />
+        <activity android:name=".view.BusquedaActivity" />
         <activity android:name=".view.FormularioView" />
         <activity android:name=".view.ListadoView" />
         <activity android:name=".view.Logo">
