@@ -33,9 +33,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.juanantonio.recordador.R;
 import com.juanantonio.recordador.interfaces.FormularioInterface;
 import com.juanantonio.recordador.model.PersonEntity;
@@ -130,11 +128,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         statusSwitch = findViewById(R.id.switch10);
         spinner = findViewById(R.id.spinner);
 
-        elementos=new ArrayList<>();
-        elementos.add("Ninguna");
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(this);
         spinner.setOnItemSelectedListener(
@@ -142,7 +135,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                     public void onItemSelected(
                             AdapterView<?> parent, View view, int position, long id) {
                     }
-
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
@@ -208,8 +200,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                 }
             }
         });
-
-
         presenter = new FormularioPresenter(this);
         presenter.cargarProvincias();
         presenter.cargarPersona();
@@ -223,6 +213,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
     }
+
     @Override
     public void savePerson() {
         String fotoEnBase64 = null;
@@ -235,10 +226,10 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         } catch (java.lang.ClassCastException e) {
             fotoEnBase64 = null;
         }
-
         PersonEntity p = new PersonEntity();
 
         //COMPROBAMOS SI TODO ESTA CORRECTO
+
         if (p.setName(nombreEditText.getText().toString()) &&
                 p.setEmail(emailEditText.getText().toString()) &&
                 p.setLocation(localidadEditText.getText().toString()) &&
@@ -257,8 +248,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                 presenter.updatePerson(p);
                 System.out.println("actualiza");
             }
-            /*Intent intent = new Intent(view.getApplicationContext(), ListadoView.class);
-            view.startActivity(intent);*/
             onBackPressed();
         } else {
             if (!p.setName(nombreEditText.getText().toString())) {
@@ -303,8 +292,8 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
             // Permiso denegado
             // A partir de Marshmallow (6.0) se pide aceptar o rechazar el permiso en tiempo de ejecución
             // En las versiones anteriores no es posible hacerlo
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 123);
                 // Una vez que se pide aceptar o rechazar el permiso se ejecuta el método "onRequestPermissionsResult" para manejar la respuesta
                 // Si el usuario marca "No preguntar más" no se volverá a mostrar este diálogo
             } else {
@@ -318,6 +307,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         }
 
     }
+
     @Override
     public void addProvince() {
         AlertDialog.Builder mydialog = new AlertDialog.Builder(this);
@@ -348,18 +338,17 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void cargarProvincias(List<String> provinces) {
-        System.out.println("entra provincias");
-        //elementos = new ArrayList<>();
-        //elementos.add("Ninguna");
-        System.out.println("pppp"+provinces);
         if (provinces != null) {
             elementos = (ArrayList<String>) provinces;
-            arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(arrayAdapter);
-
+        } else {
+            elementos = new ArrayList<>();
+            elementos.add("Ninguna");
         }
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
     }
+
     @Override
     public void cargarPersona() {
         Bundle bundle = getIntent().getExtras();
@@ -397,6 +386,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                 return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     public void setLayout() {
         if (getResources().getConfiguration().orientation == 1) {
@@ -439,6 +429,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
     @Override
     public void showDatePicker() {
         DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {

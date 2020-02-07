@@ -2,22 +2,24 @@ package com.juanantonio.recordador.presenter;
 
 import android.view.View;
 
-import com.juanantonio.recordador.view.BusquedaActivity;
+import com.juanantonio.recordador.model.PersonaSQLiteHelper;
+import com.juanantonio.recordador.view.BusquedaView;
 
 public class BusquedaPresenter {
-    BusquedaActivity view;
+    BusquedaView view;
+    private PersonaSQLiteHelper db;
 
-    public BusquedaPresenter(BusquedaActivity view) {
+    public BusquedaPresenter(BusquedaView view) {
         this.view = view;
-        view.searchButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                openListado();
-            }
-        });
+        this.db=PersonaSQLiteHelper.get();
     }
 
-    private void openListado(){
+    public void cerrarBusqueda(){
         view.cerrar();
 
+    }
+
+    public void cargarProvincias() {
+        view.cargarProvincias(db.recuperarProvincias());
     }
 }

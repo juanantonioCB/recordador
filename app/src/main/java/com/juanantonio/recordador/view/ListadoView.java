@@ -3,28 +3,23 @@ package com.juanantonio.recordador.view;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.juanantonio.recordador.R;
 import com.juanantonio.recordador.interfaces.ListadoInterface;
 import com.juanantonio.recordador.model.PersonEntity;
 import com.juanantonio.recordador.presenter.ListadoPresenter;
 import com.juanantonio.recordador.presenter.PersonAdapter;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,11 +55,11 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int id=personEntities.get(viewHolder.getAdapterPosition()).getId();
                 presenter.borrarPersona(id);
                 adapter.removeAt(viewHolder.getAdapterPosition());
-                reload();
+                presenter.getPersons();
                 Toast.makeText(getApplicationContext(), "Borrado Correctamente", Toast.LENGTH_SHORT).show();
                 Log.d("Borrado", String.valueOf(viewHolder.getAdapterPosition()));
             }
@@ -79,12 +74,12 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        reload();
+        presenter.getPersons();
 
     }
 
-    public void reload() {
-        personEntities = presenter.getPersons();
+    public void reload(List<PersonEntity> persons) {
+        personEntities=persons;
         adapter = new PersonAdapter(personEntities, this, this);
         recyclerView.setAdapter(adapter);
         nElementos.setText("Número de elementos: " + String.valueOf(adapter.getItemCount()));
@@ -103,13 +98,14 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     }
 
     public void abrirBusqueda() {
-        Intent i = new Intent(this, BusquedaActivity.class);
+        Intent i = new Intent(this, BusquedaView.class);
         startActivityForResult(i, 1);
     }
 
     @Override
     public void abrirPersona(int position) {
         Intent intent = new Intent(this, FormularioView.class);
+        System.out.println(personEntities);
         intent.putExtra("id", personEntities.get(position).getId());
         startActivity(intent);
         Log.d("clicked", String.valueOf(position));
@@ -119,9 +115,9 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                System.out.println("rec " + data.getExtras().getString("fecha"));
-                System.out.println("-----" + data.getExtras().getString("nombre"));
-                System.out.println("-----" + data.getExtras().getString("provincia"));
+                presenter.cargarBusqueda(data.getExtras().getString("nombre"),
+                        data.getExtras().getString("provincia"),
+                        data.getExtras().getString("fecha"));
             }
         }
     }
@@ -141,9 +137,8 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     @Override
     protected void onResume() {
         super.onResume();
-        this.reload();
+        presenter.getPersons();
     }
-
 
     public void setLayout() {
         setContentView(R.layout.listado_view);

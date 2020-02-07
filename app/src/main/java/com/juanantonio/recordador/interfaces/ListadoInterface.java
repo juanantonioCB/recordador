@@ -11,14 +11,17 @@ public interface ListadoInterface {
     void setLayout();
     void abrirBusqueda();
     void abrirPersona(int position);
-    //void borrarPersona();
+    void reload(List<PersonEntity> p);
     }
+
     public interface Presenter{
-        List<PersonEntity> getPersons();
+        void getPersons();
         void cargarPersonaBuscada();
         void irFormulario();
         void setLayout();
         void abrirPersona(int position);
         void borrarPersona(int id);
+
+        void cargarBusqueda(String nombre, String provincia, String fecha);
     }
 }

@@ -23,6 +23,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
             "provincia TEXT)";
     String sqlRecoverAll = "SELECT codigo, nombre,email, imagen FROM 'Personas'";
     String sqlRecoverOne = "SELECT * FROM 'Personas' WHERE codigo=?";
+    String sqlRecoverSearch = "SELECT * FROM 'Personas' WHERE nombre=? AND fecha=? AND provincia=?";
     String sqlRecoverProvince = "SELECT DISTINCT provincia FROM 'Personas'";
 
     public static final String DB_NAME = "DBPersona.db";
@@ -85,7 +86,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         this.getWritableDatabase().update("Personas", v, "codigo=?", args);
     }
 
-    public void eliminarPersona(int id){
+    public void eliminarPersona(int id) {
         String[] args = new String[]{String.valueOf(id)};
         this.getWritableDatabase().delete("Personas", "codigo=?", args);
     }
@@ -134,5 +135,27 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
                     c.getString(c.getColumnIndex("provincia")));
         }
         return p;
+    }
+
+    public List<PersonEntity> personasBusqueda(String nombre, String fecha, String provincia) {
+        List<PersonEntity> persons = null;
+        String[] args = new String[]{nombre, fecha, provincia};
+        Cursor c = this.getWritableDatabase().rawQuery(sqlRecoverSearch, args);
+        if (c.moveToFirst()) {
+            if (persons == null) {
+                persons = new ArrayList<>();
+            }
+            PersonEntity p = new PersonEntity(c.getInt(c.getColumnIndex("codigo")),
+                    c.getString(c.getColumnIndex("nombre")),
+                    c.getString(c.getColumnIndex("email")),
+                    c.getString(c.getColumnIndex("imagen")),
+                    c.getString(c.getColumnIndex("localidad")),
+                    c.getString(c.getColumnIndex("telefono")),
+                    c.getString(c.getColumnIndex("fecha")),
+                    (c.getInt(c.getColumnIndex("estado")) != 0),
+                    c.getString(c.getColumnIndex("provincia")));
+            persons.add(p);
+        }
+        return persons;
     }
 }

@@ -1,6 +1,6 @@
 package com.juanantonio.recordador.presenter;
-import android.database.sqlite.SQLiteDatabase;
 
+import android.database.sqlite.SQLiteDatabase;
 import com.juanantonio.recordador.interfaces.ListadoInterface;
 import com.juanantonio.recordador.model.PersonEntity;
 import com.juanantonio.recordador.model.PersonaSQLiteHelper;
@@ -17,19 +17,16 @@ public class ListadoPresenter implements ListadoInterface.Presenter {
         SQLiteDatabase db = personModel.getWritableDatabase();
         db.close();
         this.view = v;
-
     }
 
-
-    public List<PersonEntity> getPersons() {
-        List<PersonEntity> p = personModel.recuperarListado();
-        return p;
+    public void getPersons() {
+        List<PersonEntity>p=personModel.recuperarListado();
+        view.reload(p);
     }
 
     public void cargarPersonaBuscada(){
         view.abrirBusqueda();
     }
-
 
     public void irFormulario() {
         view.abrirFormulario();
@@ -47,6 +44,12 @@ public class ListadoPresenter implements ListadoInterface.Presenter {
     @Override
     public void borrarPersona(int id) {
         personModel.eliminarPersona(id);
+    }
+
+    @Override
+    public void cargarBusqueda(String nombre, String provincia, String fecha) {
+        System.out.println("-------"+personModel.personasBusqueda(nombre,provincia,fecha));
+        view.reload(personModel.personasBusqueda(nombre,provincia,fecha));
     }
 }
 
