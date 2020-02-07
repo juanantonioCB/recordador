@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import android.os.FileUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,19 +15,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.juanantonio.recordador.R;
-import com.juanantonio.recordador.model.Person;
+import com.juanantonio.recordador.model.PersonEntity;
 
-import java.io.File;
 import java.util.List;
 
 public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder> {
 
-    private List<Person> listPersons;
+    private List<PersonEntity> listPersonEntities;
     private Context context;
     private onPersonListener monPersonListener;
 
-    public PersonAdapter(List<Person> listPersons, Context context, onPersonListener onPersonListener) {
-        this.listPersons = listPersons;
+    public PersonAdapter(List<PersonEntity> listPersonEntities, Context context, onPersonListener onPersonListener) {
+        this.listPersonEntities = listPersonEntities;
         this.context = context;
         this.monPersonListener = onPersonListener;
     }
@@ -42,7 +40,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Person p = listPersons.get(position);
+        PersonEntity p = listPersonEntities.get(position);
         holder.textViewName.setText(p.getName());
         holder.textViewSurname.setText(p.getEmail());
         if (p.getImage() != null) {
@@ -57,8 +55,8 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if(listPersons!=null){
-            return listPersons.size();
+        if(listPersonEntities !=null){
+            return listPersonEntities.size();
         }else{
             return 0;
         }
@@ -92,9 +90,9 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     }
 
     public void removeAt(int position) {
-        listPersons.remove(position);
+        listPersonEntities.remove(position);
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, listPersons.size());
+        notifyItemRangeChanged(position, listPersonEntities.size());
     }
 
 

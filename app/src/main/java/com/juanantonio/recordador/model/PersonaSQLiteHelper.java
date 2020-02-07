@@ -57,7 +57,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(sqlCreate);
     }
 
-    public void insertarPersona(Person p) {
+    public void insertarPersona(PersonEntity p) {
         ContentValues v = new ContentValues();
         v.put("nombre", p.getName());
         v.put("email", p.getEmail());
@@ -71,7 +71,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         this.getWritableDatabase().insert("Personas", null, v);
     }
 
-    public void actualizarPersona(Person p) {
+    public void actualizarPersona(PersonEntity p) {
         ContentValues v = new ContentValues();
         v.put("nombre", p.getName());
         v.put("email", p.getEmail());
@@ -90,13 +90,13 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         this.getWritableDatabase().delete("Personas", "codigo=?", args);
     }
 
-    public List<Person> recuperarListado() {
-        List<Person> p = null;
+    public List<PersonEntity> recuperarListado() {
+        List<PersonEntity> p = null;
         Cursor c = this.getWritableDatabase().rawQuery(sqlRecoverAll, null);
         if (c.moveToFirst()) {
             p = new ArrayList<>();
             do {
-                p.add(new Person(c.getInt(c.getColumnIndex("codigo")),
+                p.add(new PersonEntity(c.getInt(c.getColumnIndex("codigo")),
                         c.getString(c.getColumnIndex("nombre")),
                         c.getString(c.getColumnIndex("email")),
                         c.getString(c.getColumnIndex("imagen")),
@@ -118,12 +118,12 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         return p;
     }
 
-    public Person recuperarPersona(int codigo) {
-        Person p = null;
+    public PersonEntity recuperarPersona(int codigo) {
+        PersonEntity p = null;
         String[] args = new String[]{String.valueOf(codigo)};
         Cursor c = this.getWritableDatabase().rawQuery(sqlRecoverOne, args);
         if (c.moveToFirst()) {
-            p = new Person(c.getInt(c.getColumnIndex("codigo")),
+            p = new PersonEntity(c.getInt(c.getColumnIndex("codigo")),
                     c.getString(c.getColumnIndex("nombre")),
                     c.getString(c.getColumnIndex("email")),
                     c.getString(c.getColumnIndex("imagen")),

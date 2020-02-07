@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Person {
+public class PersonEntity {
     private Integer id = null;
     private String name = null;
     private String email = null;
@@ -85,10 +85,10 @@ public class Person {
 
     }
 
-    public Person() {
+    public PersonEntity() {
     }
 
-    public Person(Integer id, String name, String email, String image, String location, String phone, String date, Boolean state, String province) {
+    public PersonEntity(Integer id, String name, String email, String image, String location, String phone, String date, Boolean state, String province) {
         this.id = id;
         this.name = name;
         this.email = email;

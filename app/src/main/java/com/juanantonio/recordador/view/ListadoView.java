@@ -4,30 +4,92 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.juanantonio.recordador.R;
-import com.juanantonio.recordador.model.Person;
+import com.juanantonio.recordador.interfaces.ListadoInterface;
+import com.juanantonio.recordador.model.PersonEntity;
 import com.juanantonio.recordador.presenter.ListadoPresenter;
+import com.juanantonio.recordador.presenter.PersonAdapter;
 
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ListadoView extends AppCompatActivity {
+public class ListadoView extends AppCompatActivity implements PersonAdapter.onPersonListener, ListadoInterface.View {
 
-    private ListadoPresenter presenter;
+    private ListadoInterface.Presenter presenter;
     public FloatingActionButton addButton;
     public RecyclerView rv;
     public TextView nElementos;
-    private ArrayList<Person> persons;
-    private static int resultCode = 1;
+    public List<PersonEntity> personEntities;
+    public RecyclerView recyclerView;
+    public PersonAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new ListadoPresenter(this);
+        presenter.setLayout();
+
+        personEntities = new ArrayList<>();
+        nElementos = findViewById(R.id.nElementosTextView);
+        addButton = findViewById(R.id.addButton);
+        rv = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.RecyclerId);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.irFormulario();
+            }
+        });
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                int id=personEntities.get(viewHolder.getAdapterPosition()).getId();
+                presenter.borrarPersona(id);
+                adapter.removeAt(viewHolder.getAdapterPosition());
+                reload();
+                Toast.makeText(getApplicationContext(), "Borrado Correctamente", Toast.LENGTH_SHORT).show();
+                Log.d("Borrado", String.valueOf(viewHolder.getAdapterPosition()));
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                final int fromPos = viewHolder.getAdapterPosition();
+                final int toPos = target.getAdapterPosition();
+                return true;
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        reload();
+
+    }
+
+    public void reload() {
+        personEntities = presenter.getPersons();
+        adapter = new PersonAdapter(personEntities, this, this);
+        recyclerView.setAdapter(adapter);
+        nElementos.setText("Número de elementos: " + String.valueOf(adapter.getItemCount()));
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.search) {
@@ -40,21 +102,34 @@ public class ListadoView extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void abrirBusqueda(){
-        Intent i =new Intent(this, BusquedaActivity.class);
+    public void abrirBusqueda() {
+        Intent i = new Intent(this, BusquedaActivity.class);
+        startActivityForResult(i, 1);
+    }
 
-        startActivityForResult(i,1);
+    @Override
+    public void abrirPersona(int position) {
+        Intent intent = new Intent(this, FormularioView.class);
+        intent.putExtra("id", personEntities.get(position).getId());
+        startActivity(intent);
+        Log.d("clicked", String.valueOf(position));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==1){
-            if(resultCode==RESULT_OK){
-                System.out.println("rec "+data.getExtras().getString("fecha"));
-                System.out.println("-----"+data.getExtras().getString("nombre"));
-                System.out.println("-----"+data.getExtras().getString("provincia"));
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                System.out.println("rec " + data.getExtras().getString("fecha"));
+                System.out.println("-----" + data.getExtras().getString("nombre"));
+                System.out.println("-----" + data.getExtras().getString("provincia"));
             }
         }
+    }
+
+    public void abrirFormulario() {
+        Intent intent = new Intent(this, FormularioView.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -66,20 +141,11 @@ public class ListadoView extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.reload();
+        this.reload();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setLayout();
-        nElementos = findViewById(R.id.nElementosTextView);
-        addButton = findViewById(R.id.addButton);
-        rv = findViewById(R.id.recyclerView);
-        presenter = new ListadoPresenter(this);
-    }
 
-    private void setLayout() {
+    public void setLayout() {
         setContentView(R.layout.listado_view);
     }
 
@@ -88,4 +154,8 @@ public class ListadoView extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onPersonClick(int position) {
+        presenter.abrirPersona(position);
+    }
 }
