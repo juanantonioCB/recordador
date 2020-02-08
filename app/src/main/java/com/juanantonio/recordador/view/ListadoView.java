@@ -32,13 +32,13 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     public List<PersonEntity> personEntities;
     public RecyclerView recyclerView;
     public PersonAdapter adapter;
-
+    private boolean estaBuscando;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new ListadoPresenter(this);
         presenter.setLayout();
-
+        estaBuscando=false;
         personEntities = new ArrayList<>();
         nElementos = findViewById(R.id.nElementosTextView);
         addButton = findViewById(R.id.addButton);
@@ -118,6 +118,7 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
                 presenter.cargarBusqueda(data.getExtras().getString("nombre"),
                         data.getExtras().getString("provincia"),
                         data.getExtras().getString("fecha"));
+                estaBuscando=true;
             }
         }
     }
@@ -137,7 +138,11 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.getPersons();
+        if(!estaBuscando){
+            presenter.getPersons();
+        }
+        estaBuscando=false;
+
     }
 
     public void setLayout() {
