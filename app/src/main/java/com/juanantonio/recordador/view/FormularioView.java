@@ -68,7 +68,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     public int idPersona;
     public ArrayList<String> elementos;
     private ArrayAdapter<String> arrayAdapter;
-
+    final private int CODE_WRITE_EXTERNAL_STORAGE_PERMISSION = 123;
     FormularioInterface.Presenter presenter;
 
     @Override
@@ -90,8 +90,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.deletePerson(idPersona);
-                onBackPressed();
+                delete();
             }
         });
 
@@ -135,6 +134,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                     public void onItemSelected(
                             AdapterView<?> parent, View view, int position, long id) {
                     }
+
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
@@ -203,11 +203,56 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         presenter = new FormularioPresenter(this);
         presenter.cargarProvincias();
         presenter.cargarPersona();
+    }
+
+    private void delete() {
+        new AlertDialog.Builder(this)
+                .setTitle("¡Atención!")
+                .setMessage("¿Estás seguro de que quieres borrar a este usuario")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() // creamos el boton ok en caso presione, se ejecuta el bloque de codigo
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("FormularioView", "Borrando Persona");
+                        presenter.deletePerson(idPersona);
+                        onBackPressed();
+                    }
+                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        }).show();
 
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void cargarImagen() {
+        Log.d("FormularioView", "Abriendo Galería");
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -237,7 +282,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                 p.setDate(fechaText.getText().toString())) {
             p.setImage(fotoEnBase64);
             p.setState(statusSwitch.isChecked());
-
             p.setProvince(spinner.getSelectedItem().toString());
             System.out.println("ESTADO" + statusSwitch.isChecked());
             if (idPersona == 0) {
@@ -305,8 +349,8 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
            /* Snackbar.make(constraintLayoutMainActivity, getResources().getString(R.string.write_permission_granted), Snackbar.LENGTH_LONG)
                     .show();*/
         }
-
     }
+
 
     @Override
     public void addProvince() {
@@ -323,6 +367,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
                 if (myText.length() > 0) {
                     elementos.add(myText);
                     spinner.setSelection(elementos.size() - 1);
+                    Log.d("FormularioView", "Elemento añadido");
                 }
             }
         });
@@ -347,6 +392,7 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, elementos);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+        Log.d("FormularioView","Provincias cargadas");
     }
 
     @Override
@@ -356,7 +402,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
             idPersona = bundle.getInt("id");
         Log.d("ID persona", String.valueOf(idPersona));
         deleteButton.setVisibility(View.GONE);
-
         if (idPersona != 0) {
             actionBar.setTitle("Editar Usuario");
             deleteButton.setVisibility(View.VISIBLE);
@@ -393,7 +438,6 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
             setContentView(R.layout.formulario_view);
         } else {
             setContentView(R.layout.formulario_view);
-
         }
     }
 
@@ -432,10 +476,20 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void showDatePicker() {
+        Log.d("FormularioView","Abriendo DatePicker");
         DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                final String selectedDate = day + "/" + (month + 1) + "/" + year;
+                String d = String.valueOf(day);
+                String m = String.valueOf(month + 1);
+                String y = String.valueOf(year);
+                if (day < 10) {
+                    d = "0" + d;
+                }
+                if (month < 10) {
+                    m = "0" + m;
+                }
+                final String selectedDate = d + "/" + m + "/" + y;
                 fechaText.setText(selectedDate);
             }
         });

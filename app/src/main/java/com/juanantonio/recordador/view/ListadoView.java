@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,12 +36,13 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     public RecyclerView recyclerView;
     public PersonAdapter adapter;
     private boolean estaBuscando;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new ListadoPresenter(this);
         presenter.setLayout();
-        estaBuscando=false;
+        estaBuscando = false;
         personEntities = new ArrayList<>();
         nElementos = findViewById(R.id.nElementosTextView);
         addButton = findViewById(R.id.addButton);
@@ -56,7 +60,9 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                int id=personEntities.get(viewHolder.getAdapterPosition()).getId();
+        AlertDialog alertDialog=new AlertDialog.Builder(getApplicationContext()).create();
+
+                int id = personEntities.get(viewHolder.getAdapterPosition()).getId();
                 presenter.borrarPersona(id);
                 adapter.removeAt(viewHolder.getAdapterPosition());
                 presenter.getPersons();
@@ -78,8 +84,33 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     public void reload(List<PersonEntity> persons) {
-        personEntities=persons;
+        personEntities = persons;
         adapter = new PersonAdapter(personEntities, this, this);
         recyclerView.setAdapter(adapter);
         nElementos.setText("Número de elementos: " + String.valueOf(adapter.getItemCount()));
@@ -118,7 +149,7 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
                 presenter.cargarBusqueda(data.getExtras().getString("nombre"),
                         data.getExtras().getString("provincia"),
                         data.getExtras().getString("fecha"));
-                estaBuscando=true;
+                estaBuscando = true;
             }
         }
     }
@@ -138,10 +169,10 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     @Override
     protected void onResume() {
         super.onResume();
-        if(!estaBuscando){
+        if (!estaBuscando) {
             presenter.getPersons();
         }
-        estaBuscando=false;
+        estaBuscando = false;
 
     }
 
