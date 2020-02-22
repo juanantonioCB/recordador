@@ -121,7 +121,6 @@ public class PersonEntity {
     public boolean setName(String name) {
 
         if (name.length() >= 3) {
-            System.out.println("Longitud nombre" + name.length());
             this.name = name;
             return true;
         } else {

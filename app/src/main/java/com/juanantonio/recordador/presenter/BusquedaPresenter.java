@@ -1,16 +1,16 @@
 package com.juanantonio.recordador.presenter;
 
 import com.juanantonio.recordador.interfaces.BusquedaInterface;
-import com.juanantonio.recordador.model.PersonaSQLiteHelper;
+import com.juanantonio.recordador.model.PersonaModel;
 import com.juanantonio.recordador.view.BusquedaView;
 
 public class BusquedaPresenter implements BusquedaInterface.Presenter {
     BusquedaInterface.View view;
-    private PersonaSQLiteHelper db;
+    private PersonaModel db;
 
     public BusquedaPresenter(BusquedaView view) {
         this.view = view;
-        this.db = PersonaSQLiteHelper.get();
+        this.db = PersonaModel.get();
     }
 
     @Override

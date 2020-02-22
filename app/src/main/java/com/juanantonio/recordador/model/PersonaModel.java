@@ -1,6 +1,5 @@
 package com.juanantonio.recordador.model;
 
-import android.app.Person;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -17,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonaSQLiteHelper extends SQLiteOpenHelper {
+public class PersonaModel extends SQLiteOpenHelper {
 
     String sqlCreate = "CREATE TABLE Personas (codigo INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "nombre TEXT, " +
@@ -37,16 +36,16 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
     public static final int DB_VERSION = 1;
     private Context mContext;
 
-    private static PersonaSQLiteHelper mInstance = null;
+    private static PersonaModel mInstance = null;
 
-    public static PersonaSQLiteHelper get() {
+    public static PersonaModel get() {
         if (mInstance == null) {
-            mInstance = new PersonaSQLiteHelper(MyApplication.getContext());
+            mInstance = new PersonaModel(MyApplication.getContext());
         }
         return mInstance;
     }
 
-    private PersonaSQLiteHelper(Context context) {
+    private PersonaModel(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         mContext = context;
     }
@@ -78,24 +77,30 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
             v.put("provincia", p.getProvince());
             db.insert("Personas", null, v);
         }
+    }
+
+    public boolean insertarPersona(PersonEntity p) {
+        try {
+            ContentValues v = new ContentValues();
+            v.put("nombre", p.getName());
+            v.put("email", p.getEmail());
+            v.put("imagen", p.getImage());
+            v.put("localidad", p.getLocation());
+            v.put("telefono", p.getPhone());
+            v.put("fecha", p.getDate());
+            v.put("estado", p.getState() ? 1 : 0);
+            v.put("provincia", p.getProvince());
+            this.getWritableDatabase().insert("Personas", null, v);
+        } catch (Exception e) {
+            return false;
+        } finally {
+            return true;
+        }
+
 
     }
 
-
-    public void insertarPersona(PersonEntity p) {
-        ContentValues v = new ContentValues();
-        v.put("nombre", p.getName());
-        v.put("email", p.getEmail());
-        v.put("imagen", p.getImage());
-        v.put("localidad", p.getLocation());
-        v.put("telefono", p.getPhone());
-        v.put("fecha", p.getDate());
-        v.put("estado", p.getState() ? 1 : 0);
-        v.put("provincia", p.getProvince());
-        this.getWritableDatabase().insert("Personas", null, v);
-    }
-
-    public void actualizarPersona(PersonEntity p) {
+    public boolean actualizarPersona(PersonEntity p) {
         ContentValues v = new ContentValues();
         v.put("nombre", p.getName());
         v.put("email", p.getEmail());
@@ -106,12 +111,20 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         v.put("estado", p.getState() ? 1 : 0);
         v.put("provincia", p.getProvince());
         String[] args = new String[]{String.valueOf(p.getId())};
-        this.getWritableDatabase().update("Personas", v, "codigo=?", args);
+        if (this.getWritableDatabase().update("Personas", v, "codigo=?", args) != 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void eliminarPersona(int id) {
+    public boolean eliminarPersona(int id) {
         String[] args = new String[]{String.valueOf(id)};
-        this.getWritableDatabase().delete("Personas", "codigo=?", args);
+        if (this.getWritableDatabase().delete("Personas", "codigo=?", args) != 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<PersonEntity> recuperarListado() {
@@ -161,11 +174,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
     }
 
     public List<PersonEntity> personasBusqueda(String nombre, String fecha, String provincia) {
-
-        System.out.println("n" + nombre);
-        System.out.println("f" + fecha);
-        System.out.println("p" + provincia);
-        String[] args = new String[]{nombre, fecha, provincia};
+        String[] args = new String[]{'%' + nombre + '%', '%' + fecha + '%', '%' + provincia + '%'};
         List<PersonEntity> p = null;
         Cursor c = this.getWritableDatabase().rawQuery(sqlRecoverSearch, args);
         if (c.moveToFirst()) {
@@ -181,8 +190,7 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         return p;
     }
 
-
-    private List<PersonEntity> getExamplePersons() {
+    public List<PersonEntity> getExamplePersons() {
         List<PersonEntity> persons = new ArrayList<>();
         Log.d("PersonaModel", "Creando Contacto 1");
         PersonEntity p = new PersonEntity();
@@ -330,6 +338,4 @@ public class PersonaSQLiteHelper extends SQLiteOpenHelper {
         persons.add(p10);
         return persons;
     }
-
-
 }

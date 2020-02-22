@@ -3,16 +3,13 @@ package com.juanantonio.recordador.presenter;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.juanantonio.recordador.interfaces.ListadoInterface;
-import com.juanantonio.recordador.model.PersonEntity;
-import com.juanantonio.recordador.model.PersonaSQLiteHelper;
+import com.juanantonio.recordador.model.PersonaModel;
 import com.juanantonio.recordador.view.ListadoView;
-
-import java.util.List;
 
 public class ListadoPresenter implements ListadoInterface.Presenter {
     private ListadoInterface.View view;
 
-    PersonaSQLiteHelper personModel = PersonaSQLiteHelper.get();
+    PersonaModel personModel = PersonaModel.get();
 
     public ListadoPresenter(ListadoView v) {
         SQLiteDatabase db = personModel.getWritableDatabase();

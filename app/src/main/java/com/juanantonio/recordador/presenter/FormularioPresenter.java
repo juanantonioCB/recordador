@@ -2,17 +2,17 @@ package com.juanantonio.recordador.presenter;
 
 import com.juanantonio.recordador.interfaces.FormularioInterface;
 import com.juanantonio.recordador.model.PersonEntity;
-import com.juanantonio.recordador.model.PersonaSQLiteHelper;
+import com.juanantonio.recordador.model.PersonaModel;
 import com.juanantonio.recordador.view.FormularioView;
 
 
 public class FormularioPresenter implements FormularioInterface.Presenter {
     FormularioInterface.View view;
-    private PersonaSQLiteHelper db;
+    private PersonaModel db;
 
     public FormularioPresenter(final FormularioView view) {
         this.view = view;
-        this.db = PersonaSQLiteHelper.get();
+        this.db = PersonaModel.get();
     }
 
     @Override
