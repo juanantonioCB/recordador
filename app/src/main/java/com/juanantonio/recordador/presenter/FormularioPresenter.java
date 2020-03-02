@@ -68,4 +68,9 @@ public class FormularioPresenter implements FormularioInterface.Presenter {
     public PersonEntity getPerson(int id) {
         return db.recuperarPersona(id);
     }
+
+    @Override
+    public void abrirAyuda() {
+        view.abrirAyuda();
+    }
 }

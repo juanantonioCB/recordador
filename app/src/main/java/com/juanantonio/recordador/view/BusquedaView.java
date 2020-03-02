@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -86,27 +87,33 @@ public class BusquedaView extends AppCompatActivity implements BusquedaInterface
     }
 
     @Override
-    public void onStart(){
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public void onStart() {
         super.onStart();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
     }
 
     @Override
-    public void onRestart(){
+    public void onRestart() {
         super.onRestart();
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
     }
 
@@ -115,14 +122,14 @@ public class BusquedaView extends AppCompatActivity implements BusquedaInterface
         DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                String d=String.valueOf(day);
-                String m=String.valueOf(month+1);
-                String y=String.valueOf(year);
-                if(day<10){
-                    d="0"+d;
+                String d = String.valueOf(day);
+                String m = String.valueOf(month + 1);
+                String y = String.valueOf(year);
+                if (day < 10) {
+                    d = "0" + d;
                 }
-                if(month<10){
-                    m="0"+m;
+                if (month < 10) {
+                    m = "0" + m;
                 }
                 final String selectedDate = d + "/" + m + "/" + y;
                 fechaEditText.setText(selectedDate);
@@ -132,8 +139,17 @@ public class BusquedaView extends AppCompatActivity implements BusquedaInterface
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void abrirAyuda() {
+        Intent i = new Intent(this, AyudaView.class);
+        i.putExtra("desde","busqueda");
+        startActivity(i);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.ayuda) {
+            presenter.abrirAyuda();
+        }
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();

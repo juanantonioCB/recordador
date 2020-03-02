@@ -47,5 +47,10 @@ public class ListadoPresenter implements ListadoInterface.Presenter {
     public void cargarBusqueda(String nombre, String provincia, String fecha) {
         view.reload(personModel.personasBusqueda(nombre, fecha, provincia));
     }
+
+    @Override
+    public void abrirAyuda() {
+        view.abrirAyuda();
+    }
 }
 

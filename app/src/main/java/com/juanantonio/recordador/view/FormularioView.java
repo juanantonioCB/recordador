@@ -22,6 +22,7 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -382,6 +383,12 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
     public void cargarProvincias(List<String> provinces) {
         if (provinces != null) {
             elementos = (ArrayList<String>) provinces;
@@ -423,6 +430,9 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.ayuda){
+            presenter.abrirAyuda();
+        }
         switch (item.getItemId()) {
             case android.R.id.home: //hago un case por si en un futuro agrego mas opciones
                 onBackPressed();
@@ -494,5 +504,12 @@ public class FormularioView extends AppCompatActivity implements AdapterView.OnI
             }
         });
         newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    @Override
+    public void abrirAyuda() {
+        Intent i=new Intent(this,AyudaView.class);
+        i.putExtra("desde","formulario");
+        startActivity((i));
     }
 }

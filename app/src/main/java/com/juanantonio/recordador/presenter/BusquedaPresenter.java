@@ -28,4 +28,9 @@ public class BusquedaPresenter implements BusquedaInterface.Presenter {
     public void openDatePicker() {
         view.openDatePicker();
     }
+
+    @Override
+    public void abrirAyuda() {
+        view.abrirAyuda();
+    }
 }

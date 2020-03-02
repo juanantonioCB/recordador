@@ -12,6 +12,7 @@ public interface ListadoInterface {
     void abrirBusqueda();
     void abrirPersona(int position);
     void reload(List<PersonEntity> p);
+    void abrirAyuda();
     }
 
     public interface Presenter{
@@ -21,7 +22,7 @@ public interface ListadoInterface {
         void setLayout();
         void abrirPersona(int position);
         void borrarPersona(int id);
-
         void cargarBusqueda(String nombre, String provincia, String fecha);
+        void abrirAyuda();
     }
 }

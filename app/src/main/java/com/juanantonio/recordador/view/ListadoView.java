@@ -13,16 +13,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.juanantonio.recordador.R;
 import com.juanantonio.recordador.interfaces.ListadoInterface;
 import com.juanantonio.recordador.model.PersonEntity;
 import com.juanantonio.recordador.presenter.ListadoPresenter;
 import com.juanantonio.recordador.presenter.PersonAdapter;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +63,7 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
-        AlertDialog alertDialog=new AlertDialog.Builder(getApplicationContext()).create();
+                AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
 
                 int id = personEntities.get(viewHolder.getAdapterPosition()).getId();
                 presenter.borrarPersona(id);
@@ -117,6 +120,14 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
     }
 
     @Override
+    public void abrirAyuda() {
+        System.out.println("................");
+        Intent i = new Intent(this, AyudaView.class);
+        i.putExtra("desde", "listado");
+        startActivity(i);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.search) {
             presenter.cargarPersonaBuscada();
@@ -124,6 +135,11 @@ public class ListadoView extends AppCompatActivity implements PersonAdapter.onPe
         if (item.getItemId() == R.id.sobre_appcrud) {
             Intent intent = new Intent(this, SobreAppCrud.class);
             startActivity(intent);
+        }
+
+        if (item.getItemId() == R.id.ayuda) {
+
+            presenter.abrirAyuda();
         }
         return super.onOptionsItemSelected(item);
     }

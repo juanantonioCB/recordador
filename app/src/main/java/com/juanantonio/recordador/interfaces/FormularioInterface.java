@@ -14,6 +14,7 @@ public interface FormularioInterface {
         void cargarPersona();
         void setLayout();
         void showDatePicker();
+        void abrirAyuda();
     }
     public interface Presenter{
         void cargarProvincias();
@@ -26,5 +27,6 @@ public interface FormularioInterface {
         void cargarImagen();
         void cargarPersona();
         PersonEntity getPerson(int id);
+        void abrirAyuda();
     }
 }

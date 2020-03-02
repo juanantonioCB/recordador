@@ -13,6 +13,10 @@
         android:title="Sobre appCrud"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/ayuda"
+        android:title="Ayuda"
+        app:showAsAction="never"/>
+
     <item android:id="@+id/search"
         android:title=""
         android:icon="@drawable/ic_search_black_24dp"
